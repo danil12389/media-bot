@@ -24,14 +24,24 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	//testing
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	//code generation
+	compileOnly 'org.projectlombok:lombok:1.18.34'
+
 	//vk sdk
 	implementation 'com.vk.api:sdk:1.0.16'
+
+	//telegram sdk
+	implementation 'org.telegram:telegrambots:6.9.7.1'
+
+
 	//logging
 	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.20.0'
 
 	//Log4j API and Core implementation required for binding
 	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.20.0'
 	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.20.0'
+	implementation 'org.slf4j:slf4j-api:2.0.3'
+
 }
 
 tasks.named('test') {
