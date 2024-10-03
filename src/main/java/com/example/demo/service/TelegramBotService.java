@@ -48,41 +48,27 @@ public class TelegramBotService extends TelegramLongPollingBot  {
         return telegramProperties.getToken();
     }
 
-    public void sendMessage(Long chatId, String textToSend){
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(chatId));
-        sendMessage.setText(textToSend);
-
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            log.error("Fail to send message, cause {}", e.getMessage());
-        }
-    }
-
-    public void sendPhotos(Long chatId, List<String> uris) {
-        List<InputMedia> photosToUpload = new ArrayList<>();
+    public void sendPhotos(Long chatId, List<String> uris) throws TelegramApiException {
         SendMediaGroup mediaGroup = new SendMediaGroup();
         mediaGroup.setChatId(chatId);
+        mediaGroup.setMedias(convertImageUrisToInputMedia(uris));
+        execute(mediaGroup);
+        log.info("Successfully sent several photo");
+    }
 
+    public void sendPhoto(Long chatId, List<String> uri) throws TelegramApiException {
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setPhoto(new InputFile(uri.get(0)));
+        sendPhoto.setChatId(chatId);
+        execute(sendPhoto);
+        log.info("Successfully sent one photos");
+    }
+
+    private List<InputMedia> convertImageUrisToInputMedia(List<String> uris) {
+        List<InputMedia> photosToUpload = new ArrayList<>();
         for (String photoUri: uris) {
             photosToUpload.add(new InputMediaPhoto(photoUri));
         }
-        mediaGroup.setMedias(photosToUpload);
-        try {
-            execute(mediaGroup);
-        } catch (TelegramApiException e) {
-            log.error("Fail to send media, cause {}", e.getMessage());
-        }
-    }
-
-    public void sendPhoto(Long chatId, List<String> uri) {
-        SendPhoto sendPhoto = new SendPhoto();
-        sendPhoto.setPhoto(new InputFile(uri.get(0)));
-        try {
-            execute(sendPhoto);
-        } catch (TelegramApiException e) {
-            log.error("Fail to send media, cause {}", e.getMessage());
-        }
+        return photosToUpload;
     }
 }
